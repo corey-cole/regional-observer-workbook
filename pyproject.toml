@@ -1,6 +1,6 @@
 [project]
 name = "regional-observer-workbook"
-version = "0.1.0"
+version = "0.2.0"
 description = "Library for working with scans of SPC/FFA regional observer workbooks"
 readme = "README.md"
 license = "MIT"
@@ -22,6 +22,9 @@ dependencies = [
 
 [project.scripts]
 form-extract-cli = "regional_observer_workbook.cli.utility:main"
+
+[tool.mypy]
+plugins = ["numpy.typing.mypy_plugin"]
 
 [build-system]
 requires = ["uv_build>=0.9.13,<0.10.0"]
