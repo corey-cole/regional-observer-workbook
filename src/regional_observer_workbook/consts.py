@@ -21,4 +21,4 @@ class FormName(StrEnum):
 PS4_SAMPLING_DATA = "sample-data.npy"
 PS4_COLUMN_TOTALS = "column-totals.npy"
 PS4_PAGE_TOTALS = "page-totals.npy"
-
+PS4_SAMPLING_PATTERNS = "sampling-patterns.npy"
