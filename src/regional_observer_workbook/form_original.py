@@ -1,7 +1,11 @@
+from __future__ import annotations
 import importlib.resources
+import json
 import cv2
 import numpy as np
 
+from types import SimpleNamespace
+from typing import Any
 
 from .consts import (
     FormName,
@@ -54,3 +58,16 @@ def load_bounding_boxes(
         .open("rb") as bbox_file
     ):
         return np.load(bbox_file)
+
+
+# Using "Any" as the return type so that IDEs won't complain about using dot access notation
+def load_named_fields(
+    revision: Revision,
+    form_name: FormName,
+) -> Any:
+    with (
+        importlib.resources.files("regional_observer_workbook.assets")
+        .joinpath(revision.value, form_name.value, "form-fields.json")
+        .open("rb") as json_file
+    ):
+        return json.load(json_file, object_hook=lambda d: SimpleNamespace(**d))

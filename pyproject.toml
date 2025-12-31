@@ -1,6 +1,6 @@
 [project]
 name = "regional-observer-workbook"
-version = "0.2.0"
+version = "0.3.0"
 description = "Library for working with scans of SPC/FFA regional observer workbooks"
 readme = "README.md"
 license = "MIT"

@@ -1,0 +1,124 @@
+{
+    "observer_name": [4, 141, 334, 47],
+    "vessel_name": [341, 141, 368, 47],
+    "trip_id": [711, 141, 261, 47],
+    "page": [975, 141, 259, 47],
+    "sample_type": {
+        "grab": {
+            "target": [102, 284, 63, 25]
+        },
+        "spill": {
+            "brail_number": [],
+            "measured_count": []
+        },
+        "other": {
+            "code": []
+        }
+    },
+    "sampled_brail": {
+        "brail_1": {
+            "type": "checkbox",
+            "box": [542, 240, 25, 25]
+        },
+        "brail_2": {
+            "type": "checkbox",
+            "box": [542, 271, 25, 25]
+        },
+        "brail_3": {
+            "type": "checkbox",
+            "box": [542, 305, 25, 20]
+        }
+    },
+    "brail_times": {
+        "start": [],
+        "stop": []
+    },
+    "form_count_for_sample": [],
+    "start_of_set": {
+        "year": [],
+        "month": [],
+        "day": [],
+        "hour": [],
+        "minute": []
+    },
+    "measuring_instrument": {
+        "aluminum_calipers": {
+            "type": "checkbox",
+            "box": []
+        },
+        "measuring_board": {
+            "type": "checkbox",
+            "box": []
+        },
+        "deck_tape": {
+            "type": "checkbox",
+            "box": []
+        },
+        "other": {
+            "type": "checkbox",
+            "box": []
+        },
+        "calibrated_this_set": []
+    },
+    "sampling_protocol_comments": [],
+    "brail_tallies": {
+        "full": {
+            "tally": {
+                "type": "tally",
+                "box": [46, 474, 135, 53]
+            },
+            "count": [102, 505, 79, 22]
+        },
+        "seven_eighths": {
+            "tally": {
+                "type": "tally",
+                "box": [0, 474, 0, 53]
+            },
+            "count": []
+        },
+        "three_quarters": {
+            "tally": {
+                "type": "tally",
+                "box": [0, 474, 0, 53]
+            },
+            "count": []
+        },
+        "two_thirds": {
+            "tally": {
+                "type": "tally",
+                "box": [0, 474, 0, 53]
+            },
+            "count": []
+        },
+        "half": {
+            "tally": {
+                "type": "tally",
+                "box": [0, 474, 0, 53]
+            },
+            "count": []
+        },
+        "one_third": {
+            "tally": {
+                "type": "tally",
+                "box": [0, 474, 0, 53]
+            },
+            "count": []
+        },
+        "one_quarter": {
+            "tally": {
+                "type": "tally",
+                "box": [0, 474, 0, 53]
+            },
+            "count": []
+        },
+        "one_eighth": {
+            "tally": {
+                "type": "tally",
+                "box": [0, 474, 0, 53]
+            },
+            "count": []
+        }
+    },
+    "total_brails": [],
+    "sum_of_all_brails": []
+}

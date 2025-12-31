@@ -19,3 +19,6 @@ class FormName(StrEnum):
 # Start with a constant for now, can revise later
 # when other forms/bounding boxes are available.
 PS4_SAMPLING_DATA = "sample-data.npy"
+PS4_COLUMN_TOTALS = "column-totals.npy"
+PS4_PAGE_TOTALS = "page-totals.npy"
+PS4_SAMPLING_PATTERNS = "sampling-patterns.npy"

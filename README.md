@@ -16,3 +16,4 @@ The following items are still work in progress:
 * Additional form types and bounding boxes for recent purse seine observer workbooks
 * Enabling camera images
 * Evaluating the `SIFT` and `AKAZE` feature matching algorithms
+* Creating convenience methods for working with row/column bounding box definitions

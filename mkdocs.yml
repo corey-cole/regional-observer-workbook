@@ -1,0 +1,9 @@
+site_name: Regional Observer Workbook
+site_url: https://corey-cole.github.io/regional-observer-workbook
+theme:
+  name: material
+
+plugins:
+  - search
+  - macros:
+      include_dir: includes
