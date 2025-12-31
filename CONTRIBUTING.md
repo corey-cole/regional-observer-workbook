@@ -107,3 +107,15 @@ uv run form-extract-cli show-bounding-boxes --output-dir scratch --scan src/regi
 If submitting a PR, please include the image output from this invocation as evidence.
 
 The CSV file may be left in the assets directory if desired.  It is not used at runtime, but it is easier to visually inspect than a serialized Numpy file.
+
+## Updating Documentation
+
+Documentation is managed with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/).  Library and form documentation is written to Markdown documents in the `docs/` directory
+and is then built using `mkdocs`.  It is recommended that developers use `uvx` to run `mkdocs` to avoid including MkDocs dependencies in the project.
+
+```bash
+uvx --with mkdocs-material --with mkdocs-macros-plugin mkdocs build
+```
+
+The local documentation build will be under the `site/` directory.  This directory is excluded in `.gitignore` on purpose as the official documentation is published via a GitHub Action.
+However, the local documentation build may be useful when debugging doc build problems.
