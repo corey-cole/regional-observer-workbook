@@ -1,4 +1,8 @@
-from regional_observer_workbook.form_original import load, load_bounding_boxes
+from regional_observer_workbook.form_original import (
+    load,
+    load_bounding_boxes,
+    load_named_fields,
+)
 from regional_observer_workbook.consts import FormName, PS4_SAMPLING_DATA, Revision
 import numpy as np
 import pytest
@@ -22,3 +26,8 @@ def test_load_bounding_boxes_existing_asset():
     assert bboxes is not None
     assert isinstance(bboxes, np.ndarray)
     assert bboxes.ndim >= 1  # Bounding boxes should have at least 1 dimension
+
+def test_load_named_fields():
+    field_data = load_named_fields(Revision.v2018, FormName.PS4)
+    assert field_data is not None
+    assert isinstance(field_data.observer_name, list)

@@ -48,7 +48,10 @@ def image_as_grayscale(image: np.ndarray | None) -> np.ndarray | None:
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     return image
 
-def scale_consistency(source_points: npt.NDArray[np.float32], destination_points: npt.NDArray[np.float32]) -> float:
+
+def scale_consistency(
+    source_points: npt.NDArray[np.float32], destination_points: npt.NDArray[np.float32]
+) -> float:
     """Estimate the average scale ratio between two point sets.
 
     The function computes the per-axis standard deviation of `source_points`
@@ -84,7 +87,10 @@ def scale_consistency(source_points: npt.NDArray[np.float32], destination_points
     LOGGER.debug(f"Spread check scale ratio: {scale_ratio:.2f}")
     return scale_ratio
 
-def y_coordinate_correlation(source_points: npt.NDArray[np.float32], destination_points: npt.NDArray[np.float32]) -> float:
+
+def y_coordinate_correlation(
+    source_points: npt.NDArray[np.float32], destination_points: npt.NDArray[np.float32]
+) -> float:
     """Compute an absolute correlation of Y coordinates between two point sets.
 
     The function computes the Pearson correlation coefficient between the Y
@@ -122,7 +128,10 @@ def y_coordinate_correlation(source_points: npt.NDArray[np.float32], destination
 
     return abs(y_corr)
 
-def compute_inlier_ratio(mask: npt.NDArray[np.uint8], source_points: npt.NDArray[np.float32]) -> float:
+
+def compute_inlier_ratio(
+    mask: npt.NDArray[np.uint8], source_points: npt.NDArray[np.float32]
+) -> float:
     """Compute the fraction of inlier matches from a RANSAC mask.
 
     This helper interprets ``mask`` as a boolean-like array (commonly the
@@ -156,8 +165,11 @@ def compute_inlier_ratio(mask: npt.NDArray[np.uint8], source_points: npt.NDArray
     inliers = int(np.sum(matches_mask))
     outliers = total_matches - inliers
     inlier_ratio = inliers / total_matches
-    LOGGER.debug(f"Inliers: {inliers}, Outliers: {outliers}, Inlier Ratio: {inlier_ratio:.2%}")
+    LOGGER.debug(
+        f"Inliers: {inliers}, Outliers: {outliers}, Inlier Ratio: {inlier_ratio:.2%}"
+    )
     return inlier_ratio
+
 
 def is_homography_plausible(H, scan_shape, dst_size) -> bool:
     """Validate basic geometric plausibility of a homography warp.
@@ -200,8 +212,10 @@ def is_homography_plausible(H, scan_shape, dst_size) -> bool:
     h, w = scan_shape[:2]
     # dst_size is the final tuple argument to cv2.warpPerspective, unpack into discrete vars
     dst_w, dst_h = dst_size
-    corners = np.array([[0, 0], [w, 0], [w, h], [0, h]], dtype=np.float32).reshape(-1, 1, 2)
-    pred_corners = cv2.perspectiveTransform(corners, H) # type: ignore[reportArgumentType]
+    corners = np.array([[0, 0], [w, 0], [w, h], [0, h]], dtype=np.float32).reshape(
+        -1, 1, 2
+    )
+    pred_corners = cv2.perspectiveTransform(corners, H)  # type: ignore[reportArgumentType]
 
     # Check for convexity
     if not cv2.isContourConvex(pred_corners):
@@ -247,7 +261,6 @@ def make_orb_for_image(
 # be considered as input to the matcher.
 
 
-
 def image_validator(image: np.ndarray, param_name: str) -> None:
     """Validate an image array and raise with the parameter name in the exception message."""
     if not isinstance(image, np.ndarray):
@@ -258,12 +271,13 @@ def image_validator(image: np.ndarray, param_name: str) -> None:
 
     if image.shape[0] < MIN_IMAGE_HEIGHT or image.shape[1] < MIN_IMAGE_WIDTH:
         raise InvalidImageError(f"{param_name} image is too small to process")
-    
+
     if image.shape[0] >= MAX_IMAGE_HEIGHT or image.shape[1] >= MAX_IMAGE_WIDTH:
         raise InvalidImageError(f"{param_name} image is too large to process")
 
     if not np.issubdtype(image.dtype, np.uint8):
         raise InvalidImageError(f"{param_name} array type must be uint8 (or subtype)")
+
 
 # For testing, we can align the original to itself and should get an image
 # Would also try aligning with rotated/scaled versions of the original and see if it still works
@@ -313,8 +327,8 @@ def align_to_original(
         scan = cv2.resize(scan, (original_width, original_height))
 
     scan_grayscale = image_as_grayscale(scan)
-    
-    if scan_grayscale is None :
+
+    if scan_grayscale is None:
         raise ValueError("Scanned image could not be converted to grayscale")
 
     # NOTE: SIFT patent expired in 2020, so could consider using it instead of ORB if needed.
@@ -323,11 +337,11 @@ def align_to_original(
 
     # Use ORB to detect keypoints and extract features
     orb = cv2.ORB_create(max_features)
-    # TODO: Test the new "make_orb_for_image" function   
-    #orb = make_orb_for_image(original, max_features=max_features)
- 
+    # TODO: Test the new "make_orb_for_image" function
+    # orb = make_orb_for_image(original, max_features=max_features)
+
     scan_keypoints: Sequence[cv2.KeyPoint]
-    scan_descriptors: np.ndarray # TODO: What is the type of a given element?
+    scan_descriptors: np.ndarray  # TODO: What is the type of a given element?
     (scan_keypoints, scan_descriptors) = orb.detectAndCompute(scan_grayscale, None)
 
     if scan_descriptors is None:
@@ -340,11 +354,15 @@ def align_to_original(
     # Descriptors, as an ndarray, can be stored directly, but the keypoints needs to be pickled
     original_keypoints: Sequence[cv2.KeyPoint]
     original_descriptors: np.ndarray
-    (original_keypoints, original_descriptors) = orb.detectAndCompute(original_grayscale, None)
+    (original_keypoints, original_descriptors) = orb.detectAndCompute(
+        original_grayscale, None
+    )
     LOGGER.debug(f"Number of original keypoints detected: {len(original_keypoints)}")
     # NOTE: Not performing a None check on the original image as it should have features.  If it doesn't
     # the package is hosed, so we'll let the .shape call raise for us
-    LOGGER.debug(f"Number of original descriptors detected: {original_descriptors.shape[0]}")
+    LOGGER.debug(
+        f"Number of original descriptors detected: {original_descriptors.shape[0]}"
+    )
 
     # match features
     matcher = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
@@ -377,38 +395,48 @@ def align_to_original(
         LOGGER.warning(f"Found {np.sum(~valid_mask)} invalid match indices!")
         # Filter to only valid matches
         matches = [m for i, m in enumerate(matches) if valid_mask[i]]
-        LOGGER.debug(f"Number of matches after filtering out invalid matches: {len(matches)}")
+        LOGGER.debug(
+            f"Number of matches after filtering out invalid matches: {len(matches)}"
+        )
 
     LOGGER.debug("Keypoints bounds check complete")
 
     source_points: npt.NDArray[np.float32] = np.zeros((len(matches), 2), dtype="float")
-    destination_points: npt.NDArray[np.float32] = np.zeros((len(matches), 2), dtype="float")
+    destination_points: npt.NDArray[np.float32] = np.zeros(
+        (len(matches), 2), dtype="float"
+    )
 
     for i, m in enumerate(matches):
         source_points[i] = scan_keypoints[m.queryIdx].pt
         destination_points[i] = original_keypoints[m.trainIdx].pt
-    
+
     # For a scanner, the spatial distribution of keypoints should be constant
     scale_ratio = scale_consistency(source_points, destination_points)
     if scale_ratio < 0.8 or scale_ratio > 1.2:
-        LOGGER.warning(f"Significant scale discrepance ({scale_ratio:.2f}), matches are likely noise")
-    
+        LOGGER.warning(
+            f"Significant scale discrepance ({scale_ratio:.2f}), matches are likely noise"
+        )
+
     # Similarly, the angles of a scanned image should be correlated
     y_corr = y_coordinate_correlation(source_points, destination_points)
     if y_corr < 0.5:
-        LOGGER.warning(f"Low Y-coordinate correlation ({y_corr:.2f}), matches are likely noise")
+        LOGGER.warning(
+            f"Low Y-coordinate correlation ({y_corr:.2f}), matches are likely noise"
+        )
 
     # H could be None, raise if true
     (H, mask) = cv2.findHomography(source_points, destination_points, method=cv2.RANSAC)
     if H is None:
         LOGGER.warning("Alignment homography is `None`")
         raise ValueError("No homography found between scan and original")
-    
+
     inlier_ratio = compute_inlier_ratio(mask, source_points)
     LOGGER.info(f"Inlier ratio: {inlier_ratio:.2%}")
     if inlier_ratio < 0.2:
-        LOGGER.warning(f"Low inlier ratio ({inlier_ratio:.2%}), probable poor alignment")
-    
+        LOGGER.warning(
+            f"Low inlier ratio ({inlier_ratio:.2%}), probable poor alignment"
+        )
+
     # TODO: Can we make original width/height constants?
     dst_size = (original_width, original_height)
     if is_homography_plausible(H, scan.shape, dst_size):
@@ -416,9 +444,10 @@ def align_to_original(
     else:
         raise ValueError("Homography is geometrically nonsensical")
 
+
 # NOTE: The function below is a work-in-progress in getting the alignment function to match a document image
 # from a camera vs. a scanner.  It sort-of works, in that we get a homography output.  Unfortunately, the boxes
-# are off.  The camera-sourced image probably requires additional processing 
+# are off.  The camera-sourced image probably requires additional processing
 def align_camera_image_to_original(
     scan: npt.NDArray[np.uint8],
     original: npt.NDArray[np.uint8],
@@ -478,20 +507,18 @@ def align_camera_image_to_original(
         scan = cv2.resize(scan, (original_width, original_height))
 
     scan_grayscale = image_as_grayscale(scan)
-    
-    if scan_grayscale is None :
+
+    if scan_grayscale is None:
         raise ValueError("Scanned image could not be converted to grayscale")
-    
-    
-    
+
     scale_factor = original_width / scan_width
     LOGGER.info(f"Scan could be scaled by {scale_factor} to match original dimensions")
 
     # TODO: Make this an optional flag, but hard-code for now
-    scan_grayscale = cv2.GaussianBlur(scan_grayscale, (5,5), 0)
+    scan_grayscale = cv2.GaussianBlur(scan_grayscale, (5, 5), 0)
     # TODO: Put this behind a flag
-    #clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8,8))
-    #scan_grayscale = clahe.apply(scan_grayscale)
+    # clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8,8))
+    # scan_grayscale = clahe.apply(scan_grayscale)
 
     # NOTE: SIFT patent expired in 2020, so could consider using it instead of ORB if needed.
     # SURF is probably under patent until at least 2031 (Original date of filing looks like 2009, but grant is 2012 with the 12th year
@@ -499,8 +526,8 @@ def align_camera_image_to_original(
 
     # Use ORB to detect keypoints and extract features
     orb = cv2.ORB_create(max_features)
-    # TODO: Test the new "make_orb_for_image" function   
-    #orb = make_orb_for_image(original, max_features=max_features)
+    # TODO: Test the new "make_orb_for_image" function
+    # orb = make_orb_for_image(original, max_features=max_features)
     # At present (2025-12-28), the new function doesn't perform any better on scans captured with a camera
     # Leaving it out while we debug other issues
     # TODO: Check for None in both these detectAndCompute calls, raising if true
@@ -515,9 +542,13 @@ def align_camera_image_to_original(
     # This could be computed once and stored
     original_keypoints: Sequence[cv2.KeyPoint]
     original_descriptors: np.ndarray
-    (original_keypoints, original_descriptors) = orb.detectAndCompute(original_grayscale, None)
+    (original_keypoints, original_descriptors) = orb.detectAndCompute(
+        original_grayscale, None
+    )
     LOGGER.info(f"Number of original keypoints detected: {len(original_keypoints)}")
-    LOGGER.info(f"Number of original descriptors detected: {original_descriptors.shape[0]}")
+    LOGGER.info(
+        f"Number of original descriptors detected: {original_descriptors.shape[0]}"
+    )
 
     # AI recommends using different matcher for camera images
     bf = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
@@ -530,17 +561,21 @@ def align_camera_image_to_original(
     for m, n in matches:
         if m.distance < 0.75 * n.distance:
             good.append(m)
-    
+
     LOGGER.info(f"Good matches found: {len(good)}")
 
     if len(good) <= 10:
         raise ValueError("Not enough good matches to compute homography")
-    
+
     # Unexpectedly, the code below works:  The query index should go with the scan and the train index should go with the
     # original.  However, changing it results in a garbage homography.
-    source_points = np.array([original_keypoints[m.queryIdx].pt for m in good], dtype=np.float32).reshape(-1, 1, 2)
+    source_points = np.array(
+        [original_keypoints[m.queryIdx].pt for m in good], dtype=np.float32
+    ).reshape(-1, 1, 2)
     # NOTE: This was trainIdx before, but queryIdx makes more sense given how we called knnMatch
-    destination_points = np.array([scan_keypoints[m.trainIdx].pt for m in good], dtype=np.float32).reshape(-1, 1, 2)
+    destination_points = np.array(
+        [scan_keypoints[m.trainIdx].pt for m in good], dtype=np.float32
+    ).reshape(-1, 1, 2)
 
     M, mask = cv2.findHomography(source_points, destination_points, cv2.RANSAC, 10.0)
     aligned = cv2.warpPerspective(scan, M, (original_width, original_height))
